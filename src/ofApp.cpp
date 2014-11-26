@@ -2,11 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //movies.setup("movies/fingers.mov");
-    movies.setup("movies/video-2011-05-29-15-49-03.mp4");
+    movies.movie_init("movies/video-2011-05-29-15-49-03.mp4");
  
 }
-
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -16,7 +14,9 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    movies.draw( (ofGetWidth()/2 - movies.width/2), (ofGetHeight()/2 - movies.height/2) );
+    //bool mPlayer_loopState = movies.m->mbehav->loopON;
+    
+    movies.draw( (ofGetWidth()/2 - movies.width/2), (ofGetHeight()/2 - movies.height/2));
     
     // Show the movie player stats
     string info = "FPS:  "+ofToString(ofGetFrameRate(),1)+" \n";
@@ -25,12 +25,14 @@ void ofApp::draw(){
     info += "Frame:  "+ofToString(movies.movie.getCurrentFrame(), 1)+" \n";
     info += "Left Mark:  "+ofToString(movies.frameL_loc, 1)+" \n";
     info += "Right Mark:  "+ofToString(movies.frameR_loc, 1)+" \n";
-    if ( movies.loopState == false) {
+    
+    if ( movies.isLoopOn() == false) {
         info += "Loop State:  "+ofToString("0", 1)+" \n";
     }
     else {
          info += "Loop State:  "+ofToString("1", 1)+" \n";
     }
+    
     ofSetColor(255);
     ofDrawBitmapString(info, 20, 20);
 }
@@ -50,30 +52,25 @@ void ofApp::keyPressed(int key){
     
     // Turns On looping
     if( key == 'q' ){
-        movies.loopState = true;
-        movies.loopMark();
+        movies.setLoopON();
     }
     
     // Turns On/Off Looping Between Marks
     if ( key == 'z'){
-        movies.loopState = false;
+        movies.setLoopOFF();
     }
     
+
+    // FIX THESE!!!!!!!
     // Play Video in Reverse
     if ( key == 'r'){
-        movies.forwardPlay = false;
-        movies.reversePlay = true;
-        movies.reverse();
+        movies.setReverse();
     }
     
     // Play Video in Forward/Normal Speed
     if ( key == 'f'){
-        movies.forwardPlay = true;
-        movies.reversePlay = false;
-        movies.forward();
+        movies.setForward();
     }
-
-
 }
 
 //--------------------------------------------------------------
