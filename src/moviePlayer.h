@@ -1,8 +1,8 @@
 #pragma once
 #include "ofMain.h"
 
-#define MARKA       (1<<0)
-#define MARKB       (1<<1)
+#define MARK_A       (1<<0)
+#define MARK_B       (1<<1)
 #define LOOP_ON     (1<<2)
 #define FORWARD     (1<<3)
 #define REVERSE     (1<<4)
@@ -10,39 +10,43 @@
 // Class definition
 class MoviePlayer {
     public:
-    // Room for variables
-        ofVideoPlayer movie;
-        int width;
-        int height;
-        int total_frames;
-        int frameL_loc;
-        int frameR_loc;
+/*******************************************
+     Variables
+*******************************************/
+    ofVideoPlayer movie;
+    unsigned int width;
+    unsigned int height;
+    unsigned int total_frames;
+    unsigned int frameA_loc;
+    unsigned int frameB_loc;
+    unsigned int current_frame;
 
-    // structs for data mgmt
-        struct mPlayer_ctrl {
-            // Controls
-            unsigned int ctrl;
-        };
+/*******************************************
+     Stucts and other stuff
+*******************************************/
+    struct mPlayer_marks_flags {
+            // Marks
+        unsigned int markA_flag;
+        unsigned int markB_flag;
+    };
+    struct mPlayer_behav_flags {
+        // Behavioral State
+        unsigned int loopON_flag;
+    };
+    struct mPlayer_direc_flags {
+        //Direction
+        unsigned int direc_flag;
+    };
+    struct mPlayer {
+        struct mPlayer_marks_flags *mmarks;
+        struct mPlayer_behav_flags *mbehav;
+        struct mPlayer_direc_flags *mdirec;
+    };
+    mPlayer *mflags;
     
-        struct mPlayer_behav {
-            // Behavioral State
-            unsigned int loopON;
-        };
-    
-        struct mPlayer_direc {
-            //Direction
-            unsigned int direc;
-        };
-    
-        struct mPlayer {
-            struct mPlayer_direc *mdirec;
-            struct mPlayer_behav *mbehav;
-            struct mPlayer_ctrl  *mctrl;
-        };
-    
-    // data class object
-        mPlayer *m;
-    
+/******************************************
+        Functions
+******************************************/
     // Constructor/Destructor
         MoviePlayer();
         ~MoviePlayer();
@@ -53,8 +57,8 @@ class MoviePlayer {
         void setLoopON();
         void setLoopOFF();
         void setReverse();
-        inline void setLeftTic() { frameL_loc = movie.getCurrentFrame(); }
-        inline void setRightTic() { frameR_loc = movie.getCurrentFrame(); }
+        void setMarkA();
+        void setMarkB();
     
     // State tests
         bool isLoopOn();

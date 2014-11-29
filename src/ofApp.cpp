@@ -2,19 +2,22 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    // Log set level
+    ofSetLogLevel(OF_LOG_NOTICE);
+    
+    // Movies setup
     movies.movie_init("movies/video-2011-05-29-15-49-03.mp4");
- 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    movies.update();
+    
+        movies.update();
+        //ofLogNotice() << "movies.current_frame = " << movies.current_frame << endl;;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    //bool mPlayer_loopState = movies.m->mbehav->loopON;
     
     movies.draw( (ofGetWidth()/2 - movies.width/2), (ofGetHeight()/2 - movies.height/2));
     
@@ -23,8 +26,8 @@ void ofApp::draw(){
     info += "Frames in Movie:  "+ofToString(movies.total_frames, 1)+" \n";
     info += "App Timer:  "+ofToString(ofGetElapsedTimeMillis()/1000, 1)+" s, "+ofToString(ofGetElapsedTimeMillis())+" ms\n";
     info += "Frame:  "+ofToString(movies.movie.getCurrentFrame(), 1)+" \n";
-    info += "Left Mark:  "+ofToString(movies.frameL_loc, 1)+" \n";
-    info += "Right Mark:  "+ofToString(movies.frameR_loc, 1)+" \n";
+    info += "Left Mark:  "+ofToString(movies.frameA_loc, 1)+" \n";
+    info += "Right Mark:  "+ofToString(movies.frameB_loc, 1)+" \n";
     
     if ( movies.isLoopOn() == false) {
         info += "Loop State:  "+ofToString("0", 1)+" \n";
@@ -42,12 +45,13 @@ void ofApp::keyPressed(int key){
     
     // Sets a left frame mark
     if( key == 'a' ){
-        movies.setLeftTic();
+        //ofLogNotice() << "!!!!!! Key Pressed: MarkA set !!!!!!";
+        movies.setMarkA();
     }
     
     // Sets a right frame mark
     if( key == 'd' ){
-        movies.setRightTic();
+        movies.setMarkB();
     }
     
     // Turns On looping

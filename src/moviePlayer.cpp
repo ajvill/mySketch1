@@ -5,33 +5,36 @@
 MoviePlayer::MoviePlayer() {
   
     // create space for mPlayer helpers
-    mPlayer_direc *direc = new mPlayer_direc;
-    mPlayer_ctrl *ctrl = new mPlayer_ctrl;
-    mPlayer_behav *behave = new mPlayer_behav;
-    m = new mPlayer;
+    mPlayer_direc_flags *direc = new mPlayer_direc_flags;
+    mPlayer_marks_flags *marks = new mPlayer_marks_flags;
+    //mPlayer_marks_flags *marks = (mPlayer_marks_flags *) malloc(sizeof(struct mPlayer_marks_flags));
+    mPlayer_behav_flags *behave = new mPlayer_behav_flags;
+    mflags = new mPlayer;
     
-    m->mdirec = direc;
-    m->mctrl = ctrl;
-    m->mbehav = behave;
-    
-    m->mdirec->direc |= (0<<0);
-    m->mctrl->ctrl |= (0<<0);
-    m->mbehav-> loopON |= (0<<0);
+    mflags->mdirec = direc;
+    mflags->mmarks = marks;
+    mflags->mbehav = behave;
+    current_frame = 0;
 }
 
 MoviePlayer::~MoviePlayer(){
-    delete m->mdirec;
-    delete m->mctrl;
-    delete m->mbehav;
-    delete m;
+    delete mflags->mdirec;
+    delete mflags->mmarks;
+    delete mflags->mbehav;
+    delete mflags;
 }
 
-//  Functions setup
+/***********************************
+ Functions that setup stuff
+***********************************/
 void MoviePlayer::movie_init(string file) {
     
     // Initial config info
     movie.loadMovie(file);
+    setLoopOFF();
     setForward();
+    mflags->mmarks->markA_flag &= ~MARK_A;
+    mflags->mmarks->markB_flag &= ~MARK_B;
     
     // Save the Width and Height and other Stuff
     width = movie.getWidth();
@@ -41,57 +44,80 @@ void MoviePlayer::movie_init(string file) {
 }
 
 void MoviePlayer::setLoopON() {
-    m->mbehav->loopON |= LOOP_ON;
+    mflags->mbehav->loopON_flag |= LOOP_ON;
     movie.stop();
-    movie.setFrame(frameL_loc);
+    movie.setFrame(frameA_loc);
     movie.play();
 }
 
 void MoviePlayer::setLoopOFF() {
-    m->mbehav->loopON &= ~LOOP_ON;
+    mflags->mbehav->loopON_flag &= ~LOOP_ON;
+    movie.stop();
+    movie.setFrame(movie.getCurrentFrame());
+    movie.play();
 }
 
 void MoviePlayer::setForward() {
-    m->mdirec->direc |= FORWARD;
+    mflags->mdirec->direc_flag |= FORWARD;
     movie.stop();
     movie.setSpeed(1);
     movie.play();
 }
 
 void MoviePlayer::setReverse(){
-    m->mdirec->direc |= REVERSE;
+    mflags->mdirec->direc_flag |= REVERSE;
     movie.stop();
     movie.setSpeed(-1);
     movie.play();
 }
 
+void MoviePlayer::setMarkA(){
+    mflags->mmarks->markA_flag |= MARK_A;
+    frameA_loc = movie.getCurrentFrame();
+}
+
+void MoviePlayer::setMarkB(){
+    mflags->mmarks->markB_flag |= MARK_B;
+    frameB_loc = movie.getCurrentFrame();
+}
+
+/************************************************
+ Functions that check the state of things
+*************************************************/
+
 bool MoviePlayer::isLoopOn(){
-    if (m->mbehav->loopON == LOOP_ON){
+    if (mflags->mbehav->loopON_flag == LOOP_ON){
         return true;
     } else return false;
 }
 
 bool MoviePlayer::isForwardDirec(){
-    if (m->mdirec->direc == FORWARD){
+    if (mflags->mdirec->direc_flag == FORWARD){
         return true;
     } else return false;
 }
 
 bool MoviePlayer::isReverseDirec(){
-    if (m->mdirec->direc == REVERSE) {
+    if (mflags->mdirec->direc_flag == REVERSE) {
         return true;
     } else return false;
 }
 
 bool MoviePlayer::isMarkASet(){
-    // DO THIS
+    if (mflags->mmarks->markA_flag == MARK_A) {
+        return true;
+    } else return false;
 }
 
 bool MoviePlayer::isMarkBSet(){
-    // DO THIS
+    if (mflags->mmarks->markB_flag == MARK_B) {
+        return true;
+    } else return false;
 }
 
-// Functions sync'd with App
+/************************************************
+    These functions are sync'd up with the App
+*************************************************/
 void MoviePlayer::setup(string file){
     
     // Loading Movie
@@ -102,21 +128,43 @@ void MoviePlayer::setup(string file){
 }
 
 void MoviePlayer::update() {
-    //cout <<"Update called!\n";
+
+    current_frame = movie.getCurrentFrame();
     movie.update();
 }
-
-void MoviePlayer::draw(float x, float y) {
     
-    if ( m->mbehav->loopON == LOOP_ON){
-        if ( int frame_curr = movie.getCurrentFrame() < frameR_loc ){
-            movie.draw(x, y);
-        } else if (int frame_curr = movie.getCurrentFrame() >= frameR_loc){
-            movie.setFrame(frameL_loc);
+void MoviePlayer::draw(float x, float y) {
+    // FORWARD DIRECTION
+    if ( isForwardDirec() ) {
+        // Loop is ON
+        if ( isLoopOn() ){
+            if ( movie.getCurrentFrame() >= frameB_loc ) {
+                movie.setFrame(frameA_loc);
+                movie.draw(x, y);
+            } else {
+                movie.draw(x, y);
+            }
+        }
+        // Loop IS OFF
+        else {
             movie.draw(x, y);
         }
-    } else {
-        movie.draw(x,y);
+    }
+    // REVERSE DIRECTION
+    else {
+        // Loop is ON
+        if ( isLoopOn() ){
+            if ( movie.getCurrentFrame() <= frameA_loc ){
+                movie.setFrame(frameB_loc);
+                movie.draw(x, y);
+            } else {
+                movie.draw(x, y);
+            }
+        }
+        // Loop is OFF
+        else {
+            movie.draw(x, y);
+        }
     }
 }
 
