@@ -46,7 +46,7 @@ void MoviePlayer::movie_init(string file) {
 void MoviePlayer::setLoopON() {
     mflags->mbehav->loopON_flag |= LOOP_ON;
     movie.stop();
-    movie.setFrame(frameA_loc);
+    movie.setFrame(markA_loc);
     movie.play();
 }
 
@@ -58,6 +58,7 @@ void MoviePlayer::setLoopOFF() {
 }
 
 void MoviePlayer::setForward() {
+    mflags->mdirec->direc_flag &= ~REVERSE;
     mflags->mdirec->direc_flag |= FORWARD;
     movie.stop();
     movie.setSpeed(1);
@@ -65,6 +66,7 @@ void MoviePlayer::setForward() {
 }
 
 void MoviePlayer::setReverse(){
+    mflags->mdirec->direc_flag &= ~FORWARD;
     mflags->mdirec->direc_flag |= REVERSE;
     movie.stop();
     movie.setSpeed(-1);
@@ -73,12 +75,12 @@ void MoviePlayer::setReverse(){
 
 void MoviePlayer::setMarkA(){
     mflags->mmarks->markA_flag |= MARK_A;
-    frameA_loc = movie.getCurrentFrame();
+    markA_loc = movie.getCurrentFrame();
 }
 
 void MoviePlayer::setMarkB(){
     mflags->mmarks->markB_flag |= MARK_B;
-    frameB_loc = movie.getCurrentFrame();
+    markB_loc = movie.getCurrentFrame();
 }
 
 /************************************************
@@ -138,10 +140,18 @@ void MoviePlayer::draw(float x, float y) {
     if ( isForwardDirec() ) {
         // Loop is ON
         if ( isLoopOn() ){
-            if ( movie.getCurrentFrame() >= frameB_loc ) {
-                movie.setFrame(frameA_loc);
+            // The marks are equal to each other so just play 
+            if ( (markA_loc >= markB_loc) &&
+                 (mflags->mmarks->markB_flag != MARK_B) ) {
+                
                 movie.draw(x, y);
-            } else {
+            }
+            else if ( movie.getCurrentFrame() >= markB_loc ) {
+                movie.setFrame(markA_loc);
+                movie.draw(x, y);
+            }
+            // Nothing special just play
+            else {
                 movie.draw(x, y);
             }
         }
@@ -154,14 +164,20 @@ void MoviePlayer::draw(float x, float y) {
     else {
         // Loop is ON
         if ( isLoopOn() ){
-            if ( movie.getCurrentFrame() <= frameA_loc ){
-                movie.setFrame(frameB_loc);
+            // The marks are equal to each other just play, in reverse
+            if (markA_loc == markB_loc) {
                 movie.draw(x, y);
-            } else {
+            }
+            else if ( movie.getCurrentFrame() <= markA_loc ){
+                movie.setFrame(markB_loc);
+                movie.draw(x, y);
+            }
+            // Just play it
+            else {
                 movie.draw(x, y);
             }
         }
-        // Loop is OFF
+        // Loop is OFF just play
         else {
             movie.draw(x, y);
         }

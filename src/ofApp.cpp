@@ -26,8 +26,8 @@ void ofApp::draw(){
     info += "Frames in Movie:  "+ofToString(movies.total_frames, 1)+" \n";
     info += "App Timer:  "+ofToString(ofGetElapsedTimeMillis()/1000, 1)+" s, "+ofToString(ofGetElapsedTimeMillis())+" ms\n";
     info += "Frame:  "+ofToString(movies.movie.getCurrentFrame(), 1)+" \n";
-    info += "Left Mark:  "+ofToString(movies.frameA_loc, 1)+" \n";
-    info += "Right Mark:  "+ofToString(movies.frameB_loc, 1)+" \n";
+    info += "Left Mark:  "+ofToString(movies.markA_loc, 1)+" \n";
+    info += "Right Mark:  "+ofToString(movies.markB_loc, 1)+" \n";
     
     if ( movies.isLoopOn() == false) {
         info += "Loop State:  "+ofToString("0", 1)+" \n";

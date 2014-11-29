@@ -17,8 +17,8 @@ class MoviePlayer {
     unsigned int width;
     unsigned int height;
     unsigned int total_frames;
-    unsigned int frameA_loc;
-    unsigned int frameB_loc;
+    unsigned int markA_loc;
+    unsigned int markB_loc;
     unsigned int current_frame;
 
 /*******************************************
