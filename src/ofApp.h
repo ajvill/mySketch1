@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "moviePlayer.h"
-
+#include "osc_intf.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,4 +22,6 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
         MoviePlayer     movies;
+        osc_type        hosttype;
+        OSC_Intf        osc_if;
 };

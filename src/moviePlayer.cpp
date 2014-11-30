@@ -1,4 +1,3 @@
-//#pragma once
 #include "moviePlayer.h"
 
 //Constructor / Destructors
@@ -143,7 +142,6 @@ void MoviePlayer::draw(float x, float y) {
             // The marks are equal to each other so just play 
             if ( (markA_loc >= markB_loc) &&
                  (mflags->mmarks->markB_flag != MARK_B) ) {
-                
                 movie.draw(x, y);
             }
             else if ( movie.getCurrentFrame() >= markB_loc ) {

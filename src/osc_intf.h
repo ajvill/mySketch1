@@ -8,22 +8,22 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxOsc.h"
-/*
+
 enum osc_type {
     osc_receiver,
     osc_sender
 };
-*/
 
 class OSC_Intf {
-    public:
-        //ofxOscReceiver  receiver;
-        //ofxOscSender    sender;
+    protected:
+        ofxOscReceiver  receiver;
+        ofxOscSender    sender;
+        void setOSCtype(short);
     
+    public:
         OSC_Intf();
         ~OSC_Intf();
-        void setOSCtype(short);
-        void setup();
+        void setup(short);
         void update();
         void draw();
 };
