@@ -4,11 +4,14 @@
 // Class definition
 class MoviePlayer {
     private:
+    
+        //States
         #define MARK_A      (1<<0)
         #define MARK_B      (1<<1)
         #define LOOP_ON     (1<<2)
         #define FORWARD     (1<<3)
         #define REVERSE     (1<<4)
+        #define PAUSED      (1<<5)
 
     protected:
         /*******************************************
@@ -25,13 +28,15 @@ class MoviePlayer {
         };
         struct mPlayer_direc_flags {
             //Direction
-            unsigned short direc_flag;
+            unsigned short direc;
+            unsigned short paused;
         };
         struct mPlayer {
             struct mPlayer_marks_flags *mmarks;
             struct mPlayer_behav_flags *mbehav;
             struct mPlayer_direc_flags *mdirec;
         };
+    
         mPlayer *mflags;
         ofVideoPlayer movie;
     
@@ -65,6 +70,8 @@ class MoviePlayer {
         void setReverse();
         void setMarkA();
         void setMarkB();
+        void setPaused();
+        void setPausedOff();
     
         // State tests
         bool isLoopOn();
@@ -72,6 +79,7 @@ class MoviePlayer {
         bool isReverseDirec();
         bool isMarkASet();
         bool isMarkBSet();
+        bool isPaused();
     
         //  Sync'd with App
         void setup(string file);

@@ -34,6 +34,7 @@ void MoviePlayer::movie_init(string file) {
     setForward();
     mflags->mmarks->markA_flag &= ~MARK_A;
     mflags->mmarks->markB_flag &= ~MARK_B;
+    mflags->mdirec->paused &= ~PAUSED;
     
     // Save the Width and Height and other Stuff
     width = movie.getWidth();
@@ -57,16 +58,16 @@ void MoviePlayer::setLoopOFF() {
 }
 
 void MoviePlayer::setForward() {
-    mflags->mdirec->direc_flag &= ~REVERSE;
-    mflags->mdirec->direc_flag |= FORWARD;
+    mflags->mdirec->direc &= ~REVERSE;
+    mflags->mdirec->direc |= FORWARD;
     movie.stop();
     movie.setSpeed(1);
     movie.play();
 }
 
 void MoviePlayer::setReverse(){
-    mflags->mdirec->direc_flag &= ~FORWARD;
-    mflags->mdirec->direc_flag |= REVERSE;
+    mflags->mdirec->direc &= ~FORWARD;
+    mflags->mdirec->direc |= REVERSE;
     movie.stop();
     movie.setSpeed(-1);
     movie.play();
@@ -82,6 +83,37 @@ void MoviePlayer::setMarkB(){
     markB_loc = movie.getCurrentFrame();
 }
 
+void MoviePlayer::setPaused() {
+    cout << "->     Inside the setPaused() function" << endl;
+    if ( !isPaused() ) {
+        cout << "Video is not paused so go ahead and pause and then change the state" << endl;
+        cout << "paused was set to: " << mflags->mdirec->paused << endl;
+        mflags->mdirec->paused |= PAUSED;
+        cout <<"paused now = " << mflags->mdirec->paused << endl;
+        movie.stop();
+    }
+    return;
+}
+
+void MoviePlayer::setPausedOff() {
+    cout << "->     Inside the setPausedOff() function" << endl;
+    if ( isPaused() ) {
+        cout << "paused set to true, paused = " << mflags->mdirec->paused <<endl;
+        cout << "paused set to true" << endl;
+        mflags->mdirec->paused &= ~PAUSED;
+        if (mflags->mdirec->direc == FORWARD) {
+            cout << "direction of video is forward" << endl;
+            setForward();
+        } else {
+            cout << "direction of video is reverse" << endl;
+            setReverse();
+        }
+        return;
+    }
+    cout << "paused set to false, paused = " << mflags->mdirec->paused << ", bye!" <<endl;
+    return;
+}
+
 /************************************************
  Functions that check the state of things
 *************************************************/
@@ -93,13 +125,13 @@ bool MoviePlayer::isLoopOn(){
 }
 
 bool MoviePlayer::isForwardDirec(){
-    if (mflags->mdirec->direc_flag == FORWARD){
+    if (mflags->mdirec->direc == FORWARD){
         return true;
     } else return false;
 }
 
 bool MoviePlayer::isReverseDirec(){
-    if (mflags->mdirec->direc_flag == REVERSE) {
+    if (mflags->mdirec->direc == REVERSE) {
         return true;
     } else return false;
 }
@@ -114,6 +146,17 @@ bool MoviePlayer::isMarkBSet(){
     if (mflags->mmarks->markB_flag == MARK_B) {
         return true;
     } else return false;
+}
+
+bool MoviePlayer::isPaused() {
+    cout << "->     Inside isPaused() paused = " << mflags->mdirec->paused << endl;
+    if (mflags->mdirec->direc == PAUSED) {
+        cout << "Returning true" << endl;
+        return true;
+    } else {
+     cout<<"Return false" << endl;
+     return false;
+    }
 }
 
 /************************************************

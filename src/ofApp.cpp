@@ -6,8 +6,9 @@ void ofApp::setup(){
     ofSetLogLevel(OF_LOG_NOTICE);
     
     // OSC interface setup
+    int oscport = PORT;
     hosttype = osc_receiver;
-    osc_if.setup(hosttype);
+    osc_if.setup(hosttype, oscport);
     
     // osc_receiver
     if (hosttype == osc_receiver) {
@@ -103,7 +104,6 @@ void ofApp::keyPressed(int key){
             movies.setLoopOFF();
         }
         
-
         // FIX THESE!!!!!!!
         // Play Video in Reverse
         if ( key == 'r'){
@@ -113,6 +113,18 @@ void ofApp::keyPressed(int key){
         // Play Video in Forward/Normal Speed
         if ( key == 'f'){
             movies.setForward();
+        }
+        
+        // Pause video
+        if ( key == 's'){
+            cout <<"^^      pause command" << endl;
+            movies.setPaused();
+        }
+        
+        // Unpause video
+        if ( key == 'x'){
+            cout <<"^^      unpause command" << endl;
+            movies.setPausedOff();
         }
     }
     // osc_sender

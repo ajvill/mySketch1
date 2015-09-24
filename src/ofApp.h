@@ -4,6 +4,8 @@
 #include "moviePlayer.h"
 #include "osc_intf.h"
 
+#define PORT 12345
+
 class ofApp : public ofBaseApp{
 
 	public:

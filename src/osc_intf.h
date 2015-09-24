@@ -18,12 +18,12 @@ class OSC_Intf {
     protected:
         ofxOscReceiver  receiver;
         ofxOscSender    sender;
-        void setOSCtype(short);
+        void setOSCtype(int, int);
     
     public:
         OSC_Intf();
         ~OSC_Intf();
-        void setup(short);
+        void setup(int, int);
         void update();
         void draw();
 };

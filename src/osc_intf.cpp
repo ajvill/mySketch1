@@ -18,19 +18,19 @@ OSC_Intf::~OSC_Intf() {
     
 }
 
-void OSC_Intf::setOSCtype(short hosttype){
+void OSC_Intf::setOSCtype(int hosttype, int oscport){
     
     cout <<"setOSCtype called.\n";
     if (hosttype == osc_receiver){
-        cout <<"osc receiver type\n";
+        receiver.setup(oscport);
     } else {
         cout <<"osc sender type\n";
     }
 }
  
-void OSC_Intf::setup(short hosttype){
+void OSC_Intf::setup(int hosttype, int oscport){
     cout << "OSC setup called.\n";
-    setOSCtype(hosttype);
+    setOSCtype(hosttype, oscport);
 }
 
 void OSC_Intf::update(){
